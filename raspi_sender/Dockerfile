@@ -73,7 +73,7 @@ RUN cd ~/brewerycam \
 # Build MQTT Mosquito
 RUN cd ~/brewerycam \
     && wget https://github.com/PyrmontBrewery/mosquitto/archive/refs/tags/pyrmontbrewery_v2.0.12.tar.gz \
-    && tar xvf pyrmontbrewery_v2.0.12.tar.gz && mv mosquitto-pyrmontbrewery_v2.0.12.tar.gz mosquitto \
+    && tar xvf pyrmontbrewery_v2.0.12.tar.gz && mv mosquitto-pyrmontbrewery_v2.0.12 mosquitto \
     && rm -f pyrmontbrewery_v2.0.12.tar.gz \
     && cd mosquitto \
     && mkdir build \
