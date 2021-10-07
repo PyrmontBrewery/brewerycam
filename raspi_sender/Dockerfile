@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y tzdata
 RUN set -x \
     && DEBIAN_FRONTEND=noninteractive apt-get -y install wget curl autoconf automake build-essential libass-dev libfreetype6-dev \
       libsdl1.2-dev libtheora-dev libtool libvdpau-dev libvorbis-dev libxcb1-dev libxcb-shm0-dev \
-      libxcb-xfixes0-dev pkg-config texinfo zlib1g-dev gettext tcl libssl-dev libx264-dev libomxil-bellagio-dev cmake mercurial unzip \
+      libxcb-xfixes0-dev pkg-config texinfo zlib1g-dev gettext tcl libssl-dev libx264-dev libomxil-bellagio-dev libv4l2rds0 cmake mercurial unzip \
     && mkdir ~/brewerycam \
     && apt-get -y install yasm \
     && cd ~/brewerycam \
@@ -26,7 +26,6 @@ RUN set -x \
     && make distclean
 
 # libSRT (dependency /usr/bin/tclsh)
-#FROM brewerycam_ubuntu18_baseline AS brewerycam_srt
 RUN set -x \
     && cd ~/brewerycam \
     && wget https://github.com/PyrmontBrewery/PATCHES-srt/archive/refs/tags/pyrmontbrewery_v1.4.4.tar.gz -O srt-pyrmontbrewery_v1.4.4.tar.gz \
@@ -39,21 +38,19 @@ RUN set -x \
     && make install \
     && make clean
 
-# Build FFmpeg
-#FROM brewerycam_ubuntu18_baseline AS brewerycam_ffmpeg
+# Build FFmpeg w/ SRT + OpenMAX (TODO: fix up --enable-omx-rpi for 64-bit ARM)
 RUN cd ~/brewerycam \
-
     && wget https://github.com/PyrmontBrewery/PATCHES-FFmpeg/archive/refs/tags/pyrmontbrewery-v4.1.7.tar.gz -O ffmpeg-pyrmontbrewery_v4.1.7.tar.gz \
-    && tar xvf pyrmontbrewery-v4.1.7.tar.gz && mv ffmpeg-pyrmontbrewery_v4.1.7 ffmpeg \
+    && tar xvf ffmpeg-pyrmontbrewery_v4.1.7.tar.gz && mv PATCHES-FFmpeg-pyrmontbrewery-v4.1.7 ffmpeg \
     && rm -f ffmpeg-pyrmontbrewery_v4.1.7.tar.gz \
     && cd ffmpeg \
-    && PATH="$HOME/bin:$PATH" PKG_CONFIG_PATH="$HOME/brewerycam/lib/pkgconfig" ./configure \
+    && PATH="$HOME/bin:$PATH" PKG_CONFIG_PATH="$HOME/brewerycam/lib/pkgconfig:/usr/lib/pkgconfig:/usr/lib/aarch64-linux-gnu/pkgconfig" ./configure \
       --prefix="$HOME/brewerycam" \
-      --extra-libs=-L../bmdsdk/Linux/include \
-      --extra-cflags=-I../bmdsdk/Linux/include \
+      --arch=aarch64 \
       --extra-cflags="-I$HOME/brewerycam/include" \
       --extra-ldflags="-L$HOME/brewerycam/lib" \
       --extra-libs="-lpthread -lm" \
+      --target-os=linux \
       --bindir="$HOME/brewerycam/bin" \
       --enable-ffplay \
       --enable-gpl \
@@ -65,11 +62,9 @@ RUN cd ~/brewerycam \
       --enable-nonfree \
       --enable-openssl \
       --enable-omx \
-      --enable-omx-rpi \
       --enable-libsrt \
       --enable-libfreetype \
       --disable-doc \
-      --pkg-config-flags="--static" \
     && PATH="$HOME/bin:$PATH" make -j$(cat /proc/cpuinfo | grep processor | wc -l) \
     && make install \
     && make distclean \

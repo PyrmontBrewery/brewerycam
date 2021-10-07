@@ -50,9 +50,9 @@ FROM brewerycam_baseline_zbar AS brewerycam_baseline_ffmpeg
 RUN set -x \
     && cd ~/brewerycam \
     && wget https://github.com/PyrmontBrewery/PATCHES-srt/archive/refs/tags/pyrmontbrewery_v1.4.4.tar.gz -O srt-pyrmontbrewery_v1.4.4.tar.gz \
-    && tar xvf srt-pyrmontbrewery_v1.4.4.tar.gz \
+    && tar xvf srt-pyrmontbrewery_v1.4.4.tar.gz && mv PATCHES-srt-pyrmontbrewery_v1.4.4 srt\
     && rm -f srt-pyrmontbrewery_v1.4.4.tar.gz \
-    && cd srt-pyrmontbrewery_v1.4.4 \
+    && cd srt \
     && PATH="$HOME/bin:$PATH" ./configure --prefix="/usr" --enable-static --enable-shared \
     && PATH="$HOME/bin:$PATH" make -j$(cat /proc/cpuinfo | grep processor | wc -l) \
     && make install \
@@ -61,7 +61,7 @@ RUN set -x \
 RUN set -x \
     && cd /brewerycam/ \
     && wget https://github.com/PyrmontBrewery/PATCHES-FFmpeg/archive/refs/tags/pyrmontbrewery-v4.1.7.tar.gz -O ffmpeg-pyrmontbrewery_v4.1.7.tar.gz \
-    && tar xvf pyrmontbrewery-v4.1.7.tar.gz && mv ffmpeg-pyrmontbrewery_v4.1.7 ffmpeg \
+    && tar xvf ffmpeg-pyrmontbrewery_v4.1.7.tar.gz && mv PATCHES-FFmpeg-pyrmontbrewery-v4.1.7 ffmpeg \
     && rm -f ffmpeg-pyrmontbrewery_v4.1.7.tar.gz \
     && cd /brewerycam/ffmpeg \
     && ./configure \

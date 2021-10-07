@@ -25,45 +25,11 @@ touch $ENCODER_LOG
 
 echo "RESTARTED ($(date))" >>$ENCODER_LOG
 
-# lookup table associative arrays which map Ethernet MAC address to select input type and SRT endpoint
-declare -A map_macs_address_to_names
-declare -A map_macs_address_to_inputs
-declare -A map_macs_address_to_bitrates
-declare -A map_macs_address_to_endpoint
-declare -A map_macs_address_to_codec
-
-# r01se camera names (max 21 chars)
-map_macs_address_to_names+=(
-  ["dca63211b9a6"]="PyrmontBrewery"
-)
-
-map_macs_address_to_inputs+=(
-  ["dca63211b9a6"]="-re -f lavfi -i testsrc -t 30 -video_size 1920x1080 -pix_fmt yuv420p"
-)
-
-map_macs_address_to_bitrates+=(
-  ["dca63211b9a6"]="2M"
-)
-
-# optionally turn hardware encoders on depedning on device capabilities and architecture
-map_macs_address_to_codec+=(
-       ["default"]="-c:v libx264 -pix_fmt yuv420p -preset superfast -tune zerolatency -movflags frag_keyframe+empty_moov -x264-params keyint=15:min-keyint=15:sps-id=1 -keyint_min 15 -ts mono2abs "
-)
-
-map_macs_address_to_endpoint+=(
-  ["dca63211b9a6"]="-pkt_size 1316 -flush_packets 0 -f mpegts srt://pyrmontbrewery.com.au:24005?pkt_size=1316&streamid=brewerycam"
-)
-
-DEST_ENDPOINT=${map_macs_address_to_endpoint["default"]}
-[ ${map_macs_address_to_endpoint[$THIS_MAC]+a} ] && DEST_ENDPOINT=${map_macs_address_to_endpoint[$THIS_MAC]}
-SOURCE_CAPTURE=${map_macs_address_to_inputs["default"]}
-[ ${map_macs_address_to_inputs[$THIS_MAC]+a} ] && SOURCE_CAPTURE=${map_macs_address_to_inputs[$THIS_MAC]}
-FFMPEG_VID_BITRATE=${map_macs_address_to_bitrates["default"]}
-[ ${map_macs_address_to_bitrates[$THIS_MAC]+a} ] && FFMPEG_VID_BITRATE=${map_macs_address_to_bitrates[$THIS_MAC]}
-FFMPEG_VID_CODEC=${map_macs_address_to_codec["default"]}
-[ ${map_macs_address_to_codec[$THIS_MAC]+a} ] && FFMPEG_VID_CODEC=${map_macs_address_to_codec[$THIS_MAC]}
-CAMERA_NAME=${map_macs_address_to_names["default"]}
-[ ${map_macs_address_to_names[$THIS_MAC]+a} ] && CAMERA_NAME=${map_macs_address_to_names[$THIS_MAC]}
+DEST_ENDPOINT="-pkt_size 1316 -flush_packets 0 -f mpegts srt://pyrmontbrewery.com.au:24005?pkt_size=1316&streamid=brewerycam"
+SOURCE_CAPTURE="-re -f lavfi -i testsrc -t 30 -video_size 1920x1080 -pix_fmt yuv420p"
+FFMPEG_VID_BITRATE="2M"
+FFMPEG_VID_CODEC="-c:v libx264 -pix_fmt yuv420p -preset superfast -tune zerolatency -movflags frag_keyframe+empty_moov -x264-params keyint=15:min-keyint=15:sps-id=1 -keyint_min 15 -ts mono2abs "
+CAMERA_NAME="PyrmontBrewery"
 
 FFMPEG_OUTPUT=$DEST_ENDPOINT
 
@@ -213,6 +179,7 @@ run_docker_container () {
 
   #echo "Rejoining Pyrmont Brewery Cam Raspberry Pi container $RUN_STATE"
   #docker exec -i -t "$RUN_STATE" /bin/bash -c "cd /host; /bin/bash"
+  docker exec -i -t "$RUN_STATE" /bin/bash -c "cd /host; /bin/bash"
 }
 
 fetch_opencv_deps
