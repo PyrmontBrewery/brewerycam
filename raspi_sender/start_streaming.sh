@@ -5,6 +5,7 @@
 # Kev's build script
 HERE=$PWD
 
+# Comment this if want to rebuild the Docker image/container
 IMAGE_STATE=$(docker images -q brewerycam_raspi:latest 2> /dev/null)
 RUN_STATE=$(docker ps -qf "ancestor=brewerycam_raspi")
 
@@ -210,8 +211,8 @@ run_docker_container () {
     ssh-keygen -f "$HOME/.ssh/known_hosts" -R [localhost]:2222
   fi
 
-  echo "Rejoining Pyrmont Brewery Cam Raspberry Pi container $RUN_STATE"
-  docker exec -i -t "$RUN_STATE" /bin/bash -c "cd /host; do /bin/bash"
+  #echo "Rejoining Pyrmont Brewery Cam Raspberry Pi container $RUN_STATE"
+  #docker exec -i -t "$RUN_STATE" /bin/bash -c "cd /host; /bin/bash"
 }
 
 fetch_opencv_deps
