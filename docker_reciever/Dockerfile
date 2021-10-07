@@ -10,12 +10,12 @@ ENV TZ=Australia/Sydney
 # Kev's dev baseline
 RUN set -x \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get --fix-missing -y install tzdata wget curl autoconf automake build-essential libass-dev libfreetype6-dev \
-                                            libsdl1.2-dev libtheora-dev libtool libva-dev libvdpau-dev libvorbis-dev libxcb1-dev libxcb-shm0-dev \
-                                            libxcb-xfixes0-dev pkg-config texinfo zlib1g-dev gettext tcl libssl-dev cmake mercurial unzip git \
-                                            libdrm-dev valgrind libpciaccess-dev libxslt1-dev geoip-bin libgeoip-dev zlib1g-dev libpcre3 libpcre3-dev \
-                                            libbz2-dev ca-certificates libssl-dev nasm v4l-utils libv4l-dev gtk2.0 ssh gcc g++ gdb clang rsync \
-                                            tar python libx264-dev vim strace
+    && apt-get --fix-missing -y install tzdata wget curl autoconf automake build-essential libass-dev libfreetype6-dev \
+                libsdl1.2-dev libtheora-dev libtool libva-dev libvdpau-dev libvorbis-dev libxcb1-dev libxcb-shm0-dev \
+                libxcb-xfixes0-dev pkg-config texinfo zlib1g-dev gettext tcl libssl-dev cmake mercurial unzip git \
+                libdrm-dev valgrind libpciaccess-dev libxslt1-dev geoip-bin libgeoip-dev zlib1g-dev libpcre3 libpcre3-dev \
+                libbz2-dev ca-certificates libssl-dev nasm v4l-utils libv4l-dev gtk2.0 ssh gcc g++ gdb clang rsync \
+                tar python libx264-dev vim strace
 
 COPY . brewerycam
 
